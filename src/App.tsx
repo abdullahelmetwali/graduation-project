@@ -1,19 +1,22 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
-import Home from '@/routes/home';
+import Home from "@/routes/home";
 import Capacity from "@/routes/capacity";
-import LinkBudget from "@/routes/link-budget";
+import Coverage from "@/routes/coverage";
 
 export default function App() {
   return (
     <>
       <Router>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path="/capacity" element={<Capacity />} />
-          <Route path="/link-budget" element={<LinkBudget />} />
-        </Routes>
+        <TooltipProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/capacity" element={<Capacity />} />
+            <Route path="/coverage" element={<Coverage />} />
+          </Routes>
+        </TooltipProvider>
       </Router>
     </>
-  )
-}
+  );
+};

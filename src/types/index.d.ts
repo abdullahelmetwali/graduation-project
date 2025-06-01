@@ -1,0 +1,69 @@
+export interface CoverageData {
+    area: number,
+    frequency: number,
+    bandwidth: number,
+    subCarrier: number,
+    covergeProbability: number,
+    
+    upload: number,
+    download: number,
+    
+    trPowerENB: number,
+    trPowerUE: number,
+    
+    noiseFactorUE: number,
+    noiseFactorENB: number,
+    
+    sinrUL: number,
+    sinrDL: number
+};
+
+export type CovreageResult = {
+    dlRxSensitivity: number; // in dBm
+    ulRxSensitivity: number; // in dBm
+    DL_MAPL: number,
+    UL_MAPL: number,
+    NUMBER_OF_SITES_DL: number,
+    NUMBER_OF_SITES_UL: number,
+};
+
+export interface CapacityData {
+    population: number,
+    mobilePenetration: number,
+    marketShare: number,
+    busyHourActiveUsers: number,
+    bler: number,
+
+    voiceCallRatio: number,
+    voiceCallMin: number,
+    voiceCallRate: number,
+    voiceCallDutyRatio: number,
+
+    browsingRatio: number,
+    browsingMin: number,
+    browsingRate: number,
+    browsingDutyRatio: number,
+
+    gamingRatio: number,
+    gamingMin: number,
+    gamingRate: number,
+    gamingDutyRatio: number,
+
+    streamingRatio: number,
+    streamingMin: number,
+    streamingRate: number,
+    streamingDutyRatio: number,
+
+    siteCapacity: number
+};
+
+export interface InputBoxType<T extends string |number> { 
+    label : string,
+    type : string,
+    placeHolder : string,
+    content : string,
+    badge : string | null,
+    value : string | number,
+    className : string,
+    onChange: (value: T) => void,
+};  

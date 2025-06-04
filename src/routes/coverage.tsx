@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import type { CoverageData } from "@/types";
 import calculateCoverage from "@/utils/calculate-coverage";
 
@@ -12,10 +12,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import InputBox from "@/components/used-ui/input-box";
+import InputBox from "@/components/mine-ui/input-box";
+import { useHistory } from "@/store/calculations-history";
 
 export default function Coverage() {
     document.title = 'Coverage | 5G Planning Tool';
+
+    const { coverage, setCoverage } = useHistory();
 
     const [data, setData] = useState<CoverageData>({
         area: null,
@@ -77,8 +80,27 @@ export default function Coverage() {
         });
     };
 
+    const addCoverageToHistory = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const newDataEntry = { id: Date.now(), ...data };
+
+        const isDuplicate = coverage.some(entry =>
+            JSON.stringify(entry) === JSON.stringify(data)
+        );
+
+        if (isDuplicate) return;
+
+        const calcRes = calculateCoverage(data);
+        setResult(calcRes);
+
+        const updatedCoverage = [...coverage, newDataEntry];
+        setCoverage(updatedCoverage);
+        localStorage.setItem('coverage', JSON.stringify(updatedCoverage));
+    };
+
     return (
-        <main className="grid place-items-center min-h-dvh max-lg:py-16">
+        <main className="grid place-items-center min-h-dvh pt-36 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Coverage</CardTitle>
@@ -90,11 +112,7 @@ export default function Coverage() {
                 </CardHeader>
 
                 <CardContent>
-                    <form className="space-y-4" onSubmit={(e) => {
-                        e.preventDefault();
-                        const resultFromCalc = calculateCoverage(data);
-                        setResult(resultFromCalc);
-                    }}>
+                    <form className="space-y-4" onSubmit={(e) => addCoverageToHistory(e)}>
                         <div className="flex gap-2 items-center max-lg:flex-col">
                             <InputBox
                                 type="number"

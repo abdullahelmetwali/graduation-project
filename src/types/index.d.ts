@@ -1,19 +1,21 @@
+import type { SetStateAction } from "react";
+
 export interface CoverageData {
     area: number,
     frequency: number,
     bandwidth: number,
     subCarrier: number,
     covergeProbability: number,
-    
+
     upload: number,
     download: number,
-    
+
     trPowerENB: number,
     trPowerUE: number,
-    
+
     noiseFactorUE: number,
     noiseFactorENB: number,
-    
+
     sinrUL: number,
     sinrDL: number
 };
@@ -57,13 +59,21 @@ export interface CapacityData {
     siteCapacity: number
 };
 
-export interface InputBoxType<T extends string |number> { 
-    label : string,
-    type : string,
-    placeHolder : string,
-    content : string,
-    badge : string | null,
-    value : string | number,
-    className : string,
+export interface InputBoxType<T extends string | number> {
+    label: string,
+    type: string,
+    placeHolder: string,
+    content: string,
+    badge: string | null,
+    value: string | number,
+    className: string,
     onChange: (value: T) => void,
-};  
+};
+
+export type History = {
+    capacity: CapacityData[],
+    coverage: CoverageData[],
+
+    setCapacity: SetStateAction,
+    setCoverage: SetStateAction
+}

@@ -1,6 +1,6 @@
 import type { CapacityData } from "@/types";
-import { useState } from "react";
-import  calculateCapacity from "@/utils/calculate-capacity";
+import { useState, type FormEvent } from "react";
+import calculateCapacity from "@/utils/calculate-capacity";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,12 +11,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import InputBox from "@/components/used-ui/input-box";
+import InputBox from "@/components/mine-ui/input-box";
 import { Badge } from "@/components/ui/badge";
+import { useHistory } from "@/store/calculations-history";
 
 export default function Capacity() {
     document.title = 'Capacity | 5G Planning Tool';
 
+    const { setCapacity, capacity } = useHistory();
     const [data, setData] = useState<CapacityData>({
         population: null,
         mobilePenetration: null,
@@ -50,14 +52,54 @@ export default function Capacity() {
     const [result, setResult] = useState(null);
 
     const reset = () => {
-        // setData({
-        //     area: null,
-        //     frequency: null,
-        //     bandwidth: null,
-        //     covergeProbability: null,
-        //     upload: null,
-        //     download: null,
-        // });
+        setData({
+            population: null,
+            mobilePenetration: null,
+            marketShare: null,
+            busyHourActiveUsers: null,
+            bler: 0.01,
+
+            voiceCallRatio: null,
+            voiceCallMin: null,
+            voiceCallRate: null,
+            voiceCallDutyRatio: null,
+
+            browsingRatio: null,
+            browsingMin: null,
+            browsingRate: null,
+            browsingDutyRatio: null,
+
+            gamingRatio: null,
+            gamingMin: null,
+            gamingRate: null,
+            gamingDutyRatio: null,
+
+            streamingRatio: null,
+            streamingMin: null,
+            streamingRate: null,
+            streamingDutyRatio: null,
+
+            siteCapacity: null
+        });
+    };
+
+    const addCapacityToHistory = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const newDataEntry = { id: Date.now(), ...data };
+
+        const isDuplicate = capacity.some(entry =>
+            JSON.stringify(entry) === JSON.stringify(data)
+        );
+
+        if (isDuplicate) return;
+
+        const calcRes = calculateCapacity(data);
+        setResult(calcRes);
+
+        const updatedCapacity = [...capacity, newDataEntry];
+        setCapacity(updatedCapacity);
+        localStorage.setItem('capacity', JSON.stringify(updatedCapacity));
     };
 
     // const exampleData = {
@@ -85,8 +127,37 @@ export default function Capacity() {
     //     siteCapacity: 1233.16 // Mbps
     // };
 
+    // const unitMeasurements = {
+    //     population: "person",
+    //     mobilePenetration: "%",
+    //     marketShare: "%",
+    //     busyHourActiveUsers: "users",
+    //     bler: 0.01,
+
+    //     voiceCallRatio: "%",
+    //     voiceCallMin: "minutes",
+    //     voiceCallRate: "Mbps",
+    //     voiceCallDutyRatio: "%",
+
+    //     browsingRatio: "%",
+    //     browsingMin: "minutes",
+    //     browsingRate: "Mbps",
+    //     browsingDutyRatio: "%",
+
+    //     gamingRatio: "%",
+    //     gamingMin: "minutes",
+    //     gamingRate: "Mbps",
+    //     gamingDutyRatio: "%",
+
+    //     streamingRatio: "%",
+    //     streamingMin: "minutes",
+    //     streamingRate: "Mbps",
+    //     streamingDutyRatio: "%",
+
+    //     siteCapacity: "Mbps"
+    // }
     return (
-        <main className="grid place-items-center min-h-dvh py-6 max-lg:py-16">
+        <main className="grid place-items-center min-h-dvh pt-32 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Capacity </CardTitle>
@@ -98,11 +169,7 @@ export default function Capacity() {
                 </CardHeader>
 
                 <CardContent>
-                    <form className="space-y-4" onSubmit={(e) => {
-                        e.preventDefault();
-                        const calcRes = calculateCapacity(data);
-                        setResult(calcRes);
-                    }}>
+                    <form className="space-y-4" onSubmit={(e) => addCapacityToHistory(e)}>
 
                         <div className="flex gap-2 items-center max-lg:flex-col">
                             <InputBox
@@ -189,7 +256,7 @@ export default function Capacity() {
                                     label="voice Call Rate"
                                     placeHolder="Enter the voice call rate here..."
                                     content="Amount of data consumed per voice call during a call session"
-                                    badge="in (Kbps)"
+                                    badge="in (Mbps)"
                                     className={""}
                                 />
                             </div>
@@ -404,7 +471,7 @@ export default function Capacity() {
                         result &&
                         <div className="flex items-center gap-2 text-base">
                             <p className="text-muted-foreground">Number of sites you</p>
-                                <Badge className="font-semibold text-base">{result} 🚧</Badge>
+                            <Badge className="font-semibold text-base">{result} 🚧</Badge>
                         </div>
                     }
                 </CardFooter>

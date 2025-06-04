@@ -9,13 +9,13 @@ export default function ThemeToggle() {
 
     useEffect(() => {
         setMounted(true)
-    }, [])
+    }, []);
 
     if (!mounted) return null
 
     return (
         <Button
-            variant="outline"
+            variant="secondary"
             size="icon"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         >

@@ -42,12 +42,10 @@ export default function Profile() {
             if (getName) {
                 setUser({
                     email: nowUser?.email,
-                    name: JSON.stringify(getName)
                 })
             } else {
                 setUser({
                     email: nowUser.email,
-                    name: nowUser.displayName,
                     img: nowUser.photoURL
                 });
             }
@@ -82,7 +80,6 @@ export default function Profile() {
                 }
                 <div>
                     <p>{user?.email}</p>
-                    <p className="text-muted-foreground">{user?.name && user?.name?.replaceAll('"', '')}</p>
                 </div>
             </section>
 
@@ -150,7 +147,7 @@ export default function Profile() {
                                         <p><strong>Upload:</strong> {item.upload} Mbps</p>
                                         <p><strong>Download:</strong> {item.download} Mbps</p>
 
-                                        <p><strong>Tr Power ENB:</strong> {item.trPowerENB} dBm</p>
+                                        <p><strong>Tr Power ENB:</strong> {item.trPowergNB} dBm</p>
                                         <p><strong>Tr Power UE:</strong> {item.trPowerUE} dBm</p>
 
                                         <p><strong>Noise Factor UE:</strong> {item.noiseFactorUE} dB</p>
@@ -168,5 +165,5 @@ export default function Profile() {
                 </CardContent>
             </Card>
         </main>
-    )
-}
+    );
+};

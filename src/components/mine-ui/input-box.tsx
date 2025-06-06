@@ -8,6 +8,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { AlertCircle } from "lucide-react";
 
 export default function InputBox<T extends string | number>
     ({ label, placeHolder, content, badge, type, value, onChange, className }: InputBoxType<T>) {
@@ -31,12 +32,12 @@ export default function InputBox<T extends string | number>
                 id={label}
                 placeholder={placeHolder}
                 className={`${className ? className : 'w-96 max-lg:w-[22rem]'} my-1`}
-                // required
+                required
             />
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button variant="outline" className="absolute right-0 top-7">
-                        🤔
+                        <AlertCircle />
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>

@@ -1,5 +1,5 @@
 import type { CapacityData } from "@/types";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import calculateCapacity from "@/utils/calculate-capacity";
 
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,41 @@ import {
 import InputBox from "@/components/mine-ui/input-box";
 import { Badge } from "@/components/ui/badge";
 import { useHistory } from "@/store/calculations-history";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { useNavigate } from "react-router-dom";
 
 export default function Capacity() {
     document.title = 'Capacity | 5G Planning Tool';
 
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+
     const { setCapacity, capacity } = useHistory();
+
+    useEffect(() => {
+        const getName = localStorage.getItem('user');
+        const isLoggedIn = onAuthStateChanged(auth, (nowUser) => {
+
+            if (!nowUser) {
+                navigate('/login');
+                return;
+            }
+
+            if (getName) {
+                setUser({
+                    email: nowUser?.email,
+                })
+            } else {
+                setUser({
+                    email: nowUser.email,
+                    img: nowUser.photoURL
+                });
+            }
+        });
+        return () => isLoggedIn();
+    }, []);
+
     const [data, setData] = useState<CapacityData>({
         population: null,
         mobilePenetration: null,
@@ -156,8 +186,10 @@ export default function Capacity() {
 
     //     siteCapacity: "Mbps"
     // }
+
+    if (!user) return null;
     return (
-        <main className="grid place-items-center min-h-dvh pt-32 max-lg:py-20">
+        <main className="grid place-items-center min-h-dvh py-24 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Capacity </CardTitle>

@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { signInWithPopup } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import GoogleLogo from "@/assets/google.svg";
 
 export default function LoginWithGoogle() {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function LoginWithGoogle() {
     });
     return (
         <Button type="button" variant="outline" className="w-full" onClick={() => signByGoogle.mutate()}>
-            <img src="/src/assets/google.svg" alt="google-logo" className="w-4" />
+            <img src={GoogleLogo} alt="google-logo" className="w-4" />
             Login with Google
         </Button>
     )

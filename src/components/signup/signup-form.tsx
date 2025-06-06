@@ -7,10 +7,11 @@ import { auth } from "@/config/firebase";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Loader } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginWithGoogle from "@/components/mine-ui/login-google";
 
 export default function SignUpForm() {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -40,8 +41,11 @@ export default function SignUpForm() {
         description: "You have access now to do your calculations",
       });
 
-      window.history.back();
       localStorage.setItem('user', data.firstName + data.secName);
+      // window.history.back();
+      setTimeout(() => {
+        navigate('/profile');
+      }, 300);
     },
     onError: () => {
       toast({

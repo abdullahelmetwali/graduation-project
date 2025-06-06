@@ -1,4 +1,5 @@
 import SignUpForm from "@/components/signup/signup-form";
+import SignUpImg from "@/assets/ONE.gif";
 
 export default function SignUp() {
     document.title = "Signup | 5G Planning Tool";
@@ -11,9 +12,9 @@ export default function SignUp() {
             </section>
             <section className="bg-black relative hidden lg:grid lg:place-items-center">
                 <img
-                    src="/src/assets/test.png"
+                    src={SignUpImg}
                     alt="sign-up-image"
-                    className=" z-50  h-96 w-96 object-cover dark:brightness-[0.8 dark:grayscale"
+                    className="z-50  h-96 w-96 object-cover dark:brightness-[0.8] dark:grayscale"
                 />
             </section>
         </main>

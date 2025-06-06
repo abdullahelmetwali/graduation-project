@@ -76,8 +76,13 @@ export default function LoginForm() {
             required
           />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
+        <div className="grid gap-2 w-full">
+          <div className="flex items-center justify-between w-full">
+            <Label htmlFor="password">Password</Label>
+            <Link to={'/forget-password'} className="underline text-sm">
+              Forget password?
+            </Link>
+          </div>
           <Input
             id="password"
             type="password"

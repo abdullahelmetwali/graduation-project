@@ -1,7 +1,14 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { CoverageData } from "@/types";
 import calculateCoverage from "@/utils/calculate-coverage";
-
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +21,43 @@ import {
 } from "@/components/ui/card";
 import InputBox from "@/components/mine-ui/input-box";
 import { useHistory } from "@/store/calculations-history";
+import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AlertCircle } from "lucide-react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { useNavigate } from "react-router-dom";
 
 export default function Coverage() {
     document.title = 'Coverage | 5G Planning Tool';
+    const navigate = useNavigate();
+
+    const [user, setUser] = useState(null);
 
     const { coverage, setCoverage } = useHistory();
+
+    useEffect(() => {
+        const getName = localStorage.getItem('user');
+        const isLoggedIn = onAuthStateChanged(auth, (nowUser) => {
+
+            if (!nowUser) {
+                navigate('/login');
+                return;
+            }
+
+            if (getName) {
+                setUser({
+                    email: nowUser?.email,
+                })
+            } else {
+                setUser({
+                    email: nowUser.email,
+                    img: nowUser.photoURL
+                });
+            }
+        });
+        return () => isLoggedIn();
+    }, []);
 
     const [data, setData] = useState<CoverageData>({
         area: null,
@@ -33,11 +72,19 @@ export default function Coverage() {
         noiseFactorUE: null,
         noiseFactorENB: null,
 
-        trPowerENB: null,
+        trPowergNB: null,
         trPowerUE: null,
 
         sinrUL: null,
-        sinrDL: null
+        sinrDL: null,
+
+        antennaGain: null,
+        buildingLoss: null,
+
+        shadowFaddingSelected: null,
+        shadowFaddingLoss: null,
+
+        foliageLoss: null
     });
 
     const [result, setResult] = useState({
@@ -63,11 +110,19 @@ export default function Coverage() {
             noiseFactorUE: null,
             noiseFactorENB: null,
 
-            trPowerENB: null,
+            trPowergNB: null,
             trPowerUE: null,
 
             sinrUL: null,
-            sinrDL: null
+            sinrDL: null,
+
+            antennaGain: null,
+            buildingLoss: null,
+
+            shadowFaddingSelected: null,
+            shadowFaddingLoss: null,
+
+            foliageLoss: null
         });
 
         setResult({
@@ -99,8 +154,9 @@ export default function Coverage() {
         localStorage.setItem('coverage', JSON.stringify(updatedCoverage));
     };
 
+    if (!user) return null;
     return (
-        <main className="grid place-items-center min-h-dvh pt-36 max-lg:py-20">
+        <main className="grid place-items-center min-h-dvh py-24 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Coverage</CardTitle>
@@ -113,7 +169,7 @@ export default function Coverage() {
 
                 <CardContent>
                     <form className="space-y-4" onSubmit={(e) => addCoverageToHistory(e)}>
-                        <div className="flex gap-2 items-center max-lg:flex-col">
+                        <div className="w-full">
                             <InputBox
                                 type="number"
                                 value={data.area}
@@ -122,128 +178,333 @@ export default function Coverage() {
                                 placeHolder="Enter the place's area here..."
                                 content="Total area you need to calculate"
                                 badge="in (KM²)"
-                                className=""
-                            />
-
-                            <InputBox
-                                type="number"
-                                value={data.covergeProbability}
-                                onChange={(value: number) => setData(prev => ({ ...prev, covergeProbability: Number(value) }))}
-                                label="Coverge Probability"
-                                placeHolder="Enter the coverge probability here..."
-                                content="The coverge probability you need"
-                                badge="in (Percentage (%))"
-                                className=""
-                            />
-                        </div>
-
-                        <div className="flex gap-2 items-center max-lg:flex-col">
-                            <InputBox
-                                type="number"
-                                value={data.frequency}
-                                onChange={(value: number) => setData(prev => ({ ...prev, frequency: Number(value) }))}
-                                label="frequency"
-                                placeHolder="Enter the frequency here..."
-                                content="Frequency of the total area"
-                                badge="in (GHZ)"
-                                className=""
-                            />
-
-                            <InputBox
-                                type="number"
-                                value={data.bandwidth}
-                                onChange={(value: number) => setData(prev => ({ ...prev, bandwidth: Number(value) }))}
-                                label="bandwidth"
-                                placeHolder="Enter the bandwidth here..."
-                                content="Amount of data you can send per second"
-                                badge="in (HZ)"
-                                className=""
-                            />
-                        </div>
-
-                        <div className="w-full !my-3">
-                            <InputBox
-                                type="number"
-                                value={data.subCarrier}
-                                onChange={(value: number) => setData(prev => ({ ...prev, subCarrier: Number(value) }))}
-                                label="sub-carrier"
-                                placeHolder="Enter the sub-carrier here..."
-                                content=" It's the frequency gap between two near subcarriers"
-                                badge="in (HZ)"
                                 className="w-full"
                             />
+
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-2 items-center">
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="frequency">Frequency</Label>
+                                <Select
+                                    value={data.frequency?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, frequency: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="frequency">
+                                        <SelectValue placeholder="Choose frequency" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="3.5">3.5 GHZ</SelectItem>
+                                            <SelectItem value="28">28 GHZ</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="w-full">
+                                <InputBox
+                                    type="number"
+                                    value={data.bandwidth}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, bandwidth: Number(value) }))}
+                                    label="bandwidth"
+                                    placeHolder="Enter the bandwidth here..."
+                                    content="Amount of data you can send per second"
+                                    badge="in (HZ)"
+                                    className="w-full"
+                                />
+                            </div>
                         </div>
 
                         <div className="flex gap-2 items-center max-lg:flex-col">
-                            <InputBox
-                                type="number"
-                                value={data.noiseFactorUE}
-                                onChange={(value: number) => setData(prev => ({ ...prev, noiseFactorUE: Number(value) }))}
-                                label="noise factor user equipment"
-                                placeHolder="Enter the user equipment here..."
-                                content="Amount of internal noise the user's device adds"
-                                badge="in (DB)"
-                                className=""
-                            />
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="enviroment-type">Enviroment type</Label>
+                                <Select
+                                    value={data.buildingLoss?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, buildingLoss: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    {
+                                        data.frequency ?
+                                            <SelectTrigger id="enviroment-type" disabled={!data.frequency}>
+                                                <SelectValue placeholder="Choose enviroment type" />
+                                            </SelectTrigger>
+                                            :
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger id="enviroment-type" disabled={!data.frequency}>
+                                                        <SelectValue placeholder="Choose enviroment type" />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="flex items-center !text-sm gap-2 text-destructive font-semibold">
+                                                    <AlertCircle size={16} /> Please select a frequency first
+                                                </TooltipContent>
+                                            </Tooltip>
+                                    }
+                                    <SelectContent>
+                                        {
+                                            data.frequency === 3.5 ?
+                                                <SelectGroup>
+                                                    <SelectItem value="26">Dense Urban</SelectItem>
+                                                    <SelectItem value="22">Urban</SelectItem>
+                                                    <SelectItem value="15">Rural</SelectItem>
+                                                </SelectGroup>
+                                                :
+                                                <SelectGroup>
+                                                    <SelectItem value="28">Dense Urban</SelectItem>
+                                                    <SelectItem value="24">Urban</SelectItem>
+                                                    <SelectItem value="17">Rural</SelectItem>
+                                                </SelectGroup>
+                                        }
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                            <InputBox
-                                type="number"
-                                value={data.noiseFactorENB}
-                                onChange={(value: number) => setData(prev => ({ ...prev, noiseFactorENB: Number(value) }))}
-                                label="noice factor of station "
-                                placeHolder="Enter the coverge probability here..."
-                                content="Amount of noise added by the base station's components"
-                                badge="in (DB)"
-                                className=""
-                            />
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="tree-type">Tree density</Label>
+                                <Select
+                                    value={data.foliageLoss?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, foliageLoss: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    {
+                                        data.frequency ?
+                                            <SelectTrigger id="tree-type" disabled={!data.frequency}>
+                                                <SelectValue placeholder="Choose trees type" />
+                                            </SelectTrigger>
+                                            :
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger id="tree-type" disabled={!data.frequency}>
+                                                        <SelectValue placeholder="Choose trees type" />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="flex items-center !text-sm gap-2 text-destructive font-semibold">
+                                                    <AlertCircle size={16} /> Please select a frequency first
+                                                </TooltipContent>
+                                            </Tooltip>
+                                    }
+                                    <SelectContent>
+                                        {
+                                            data.frequency === 3.5 ?
+                                                <SelectGroup>
+                                                    <SelectItem value="7.5">Sparse Tree</SelectItem>
+                                                    <SelectItem value="8.5">Dense Tree</SelectItem>
+                                                    <SelectItem value="19.5">3 Tree</SelectItem>
+                                                    <SelectItem value="11">2 Tree</SelectItem>
+                                                    {/* <SelectItem value="11">Typical</SelectItem> */}
+                                                </SelectGroup>
+                                                :
+                                                <SelectGroup>
+                                                    <SelectItem value="8">Sparse Tree</SelectItem>
+                                                    <SelectItem value="15">Dense Tree</SelectItem>
+                                                    <SelectItem value="24">3 Tree</SelectItem>
+                                                    <SelectItem value="19">2 Tree</SelectItem>
+                                                    <SelectItem value="17">Typical</SelectItem>
+                                                </SelectGroup>
+                                        }
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-2 items-center">
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="config">Antenna Config</Label>
+                                <Select
+                                    value={data.antennaGain?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, antennaGain: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="config">
+                                        <SelectValue placeholder="Choose antenna config" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="24">64T64R AAU</SelectItem>
+                                            <SelectItem value="21">32T32R AAU</SelectItem>
+                                            <SelectItem value="18">16T16R AAU</SelectItem>
+                                            <SelectItem value="15">8T8R RRU</SelectItem>
+                                            <SelectItem value="12">4T4R</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="w-full">
+                                <InputBox
+                                    type="number"
+                                    value={data.subCarrier}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, subCarrier: Number(value) }))}
+                                    label="sub-carrier"
+                                    placeHolder="Enter the sub-carrier here..."
+                                    content=" It's the frequency gap between two near subcarriers"
+                                    badge="in (HZ)"
+                                    className=""
+                                />
+                            </div>
+                        </div>
+
+                        {/* slow fading */}
+                        <div className="flex gap-2 items-center max-lg:flex-col">
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="selected-sl">Slow fading Margin Type</Label>
+                                <Select
+                                    value={data.shadowFaddingSelected?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, shadowFaddingSelected: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="selected-sl">
+                                        <SelectValue placeholder="Choose slow fading margin loss type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="2">NLOS</SelectItem>
+                                            <SelectItem value="3">LOS</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="loss-sl">Slow fading Margin
+                                    <strong className="text-muted-foreground mx-1">( LOS or NLOS )</strong>
+                                </Label>
+                                <Select
+                                    value={data.shadowFaddingLoss?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, shadowFaddingLoss: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    {
+                                        data.shadowFaddingSelected ?
+                                            <SelectTrigger id="loss-sl">
+                                                <SelectValue placeholder="Choose shadow fading margin loss" />
+                                            </SelectTrigger>
+                                            :
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger id="loss-sl" disabled={!data.shadowFaddingSelected}>
+                                                        <SelectValue placeholder="Choose shadow fading margin loss" />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="flex items-center !text-sm gap-2 text-destructive font-semibold">
+                                                    <AlertCircle size={16} /> Please select a shadow fading margin type first
+                                                </TooltipContent>
+                                            </Tooltip>
+                                    }
+                                    <SelectContent>
+                                        {
+                                            // 2 === nLos 
+                                            data.shadowFaddingSelected === 2 ?
+                                                <SelectGroup>
+                                                    <SelectItem value="8">Rural Macro (RMa)</SelectItem>
+                                                    <SelectItem value="6">Urban Macro (UMa)</SelectItem>
+                                                    <SelectItem value="7.82">Urban Micro (UMi)</SelectItem>
+                                                    <SelectItem value="8.03">Indoor Hotspot (InH)</SelectItem>
+                                                </SelectGroup>
+                                                :
+                                                // los
+                                                <SelectGroup>
+                                                    {/* <SelectItem value="4">Rural Macro (RMa)</SelectItem> */}
+                                                    <SelectItem value="4">Urban Macro (UMa)</SelectItem>
+                                                    {/* <SelectItem value="4">Urban Micro (UMi)</SelectItem> */}
+                                                    <SelectItem value="3">Indoor Hotspot (InH)</SelectItem>
+                                                </SelectGroup>
+                                        }
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+
                         </div>
 
                         <div className="flex gap-2 items-center max-lg:flex-col">
-                            <InputBox
-                                type="number"
-                                value={data.sinrDL}
-                                onChange={(value: number) => setData(prev => ({ ...prev, sinrDL: Number(value) }))}
-                                label="SINR DownLink"
-                                placeHolder="Enter the sinr downlink here..."
-                                content="Signal quality at the UE when receiving data from the base station (downloading)"
-                                badge="in (DB)"
-                                className=""
-                            />
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="sinr-dl">
+                                    Code Rate <strong className="text-muted-foreground">( SINR )</strong> DL
+                                </Label>
+                                <Select
+                                    value={data.sinrDL?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, sinrDL: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="sinr-dl">
+                                        <SelectValue placeholder="Choose the code rate downlink" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="-6.7">0.076</SelectItem>
+                                            <SelectItem value="-4.7">0.12</SelectItem>
+                                            <SelectItem value="-2.3">0.19</SelectItem>
+                                            <SelectItem value="0.2">0.30</SelectItem>
+                                            <SelectItem value="5.9">0.37</SelectItem>
+                                            <SelectItem value="2.4">0.44</SelectItem>
+                                            <SelectItem value="11.7">0.45</SelectItem>
+                                            <SelectItem value="8">0.48</SelectItem>
+                                            <SelectItem value="14">0.55</SelectItem>
+                                            <SelectItem value="4.3">0.59</SelectItem>
+                                            <SelectItem value="10.3">0.60</SelectItem>
+                                            <SelectItem value="16.3">0.65</SelectItem>
+                                            <SelectItem value="18.7">0.75</SelectItem>
+                                            <SelectItem value="21">0.85</SelectItem>
+                                            <SelectItem value="22.7">0.93</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                            <InputBox
-                                type="number"
-                                value={data.sinrUL}
-                                onChange={(value: number) => setData(prev => ({ ...prev, sinrUL: Number(value) }))}
-                                label="SINR UpLink"
-                                placeHolder="Enter the sinr uplink here..."
-                                content="Signal quality at the base station when receiving data from the (UE) (uploading)"
-                                badge="in (DB)"
-                                className=""
-                            />
-                        </div>
+                            <div className="w-full space-y-1">
+                                <Label htmlFor="sinr-ul">
+                                    Code Rate <strong className="text-muted-foreground">( SINR )</strong> UL
+                                </Label>
+                                <Select
+                                    value={data.sinrUL?.toString()}
+                                    onValueChange={(value) =>
+                                        setData((prev) => ({ ...prev, sinrUL: Number(value) }))
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="sinr-ul">
+                                        <SelectValue placeholder="Choose the code rate uplink" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="-6.7">0.076</SelectItem>
+                                            <SelectItem value="-4.7">0.12</SelectItem>
+                                            <SelectItem value="-2.3">0.19</SelectItem>
+                                            <SelectItem value="0.2">0.30</SelectItem>
+                                            <SelectItem value="5.9">0.37</SelectItem>
+                                            <SelectItem value="2.4">0.44</SelectItem>
+                                            <SelectItem value="11.7">0.45</SelectItem>
+                                            <SelectItem value="8">0.48</SelectItem>
+                                            <SelectItem value="14">0.55</SelectItem>
+                                            <SelectItem value="4.3">0.59</SelectItem>
+                                            <SelectItem value="10.3">0.60</SelectItem>
+                                            <SelectItem value="16.3">0.65</SelectItem>
+                                            <SelectItem value="18.7">0.75</SelectItem>
+                                            <SelectItem value="21">0.85</SelectItem>
+                                            <SelectItem value="22.7">0.93</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                        <div className="flex gap-2 items-center max-lg:flex-col">
-                            <InputBox
-                                type="number"
-                                value={data.trPowerENB}
-                                onChange={(value: number) => setData(prev => ({ ...prev, trPowerENB: Number(value) }))}
-                                label="eNodeB Power"
-                                placeHolder="Enter the eNodeB here..."
-                                content="The maximum number of transmission power for the base station"
-                                badge="in (dBm)"
-                                className=""
-                            />
-
-                            <InputBox
-                                type="number"
-                                value={data.trPowerUE}
-                                onChange={(value: number) => setData(prev => ({ ...prev, trPowerUE: Number(value) }))}
-                                label="UE Power"
-                                placeHolder="Enter the UE power here..."
-                                content="The maximum number of sending (transmitting) power for user's device"
-                                badge="in (dBm)"
-                                className=""
-                            />
                         </div>
 
                         {/* buttons */}
@@ -259,7 +520,7 @@ export default function Coverage() {
                 </CardContent>
 
                 <CardFooter className="grid gap-2">
-                    {/* {
+                    {
                         result.dlRxSensitivity &&
                         <div className="flex items-center gap-2">
                             <p>Download sensitivity (RX Sens. ( DL ))</p>
@@ -273,7 +534,7 @@ export default function Coverage() {
                             <p>Upload sensitivity (RX Sens. ( UL ))</p>
                             <Badge>{result.ulRxSensitivity} dBM</Badge>
                         </div>
-                    } */}
+                    }
                     {
                         result.DL_MAPL &&
                         <div className="flex items-center gap-2">

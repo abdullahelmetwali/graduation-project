@@ -1,4 +1,5 @@
-import { LogIn, LogOut, LucideUserSquare, UserRound, Wifi } from "lucide-react";
+import { LogIn, LogOut, LucideUserSquare, UserRound } from "lucide-react";
+import Logo from "@/assets/logo.png";
 import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "@/components/app/toggle-theme";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 export default function Navbar() {
     const [isUserHere, setIsUserHere] = useState(null);
     const location = useLocation();
+
     useEffect(() => {
         const isLoggedIn = onAuthStateChanged(auth, (nowUser) => {
             setIsUserHere(nowUser)
@@ -28,15 +30,15 @@ export default function Navbar() {
 
     return (
         <header className={cn("p-4 lg:px-16 fixed w-full z-50",
-            location.pathname.includes('login') || location.pathname.includes('signup') ? "bg-transparent" : "bg-background"
+            location.pathname.includes('login') || location.pathname.includes('signup') || location.pathname.includes('forget') ? "bg-transparent" : "bg-background"
         )}>
             <nav className="flex justify-between items-center w-full">
                 <div>
                     <Link to="/" className="flex items-center gap-2 font-medium">
-                        <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-                            <Wifi className="size-4" />
+                        <div className="bg-secondary-foreground text-primary-foreground flex size-7 items-center justify-center rounded-md">
+                            <img src={Logo} alt="logo" />
                         </div>
-                        5G Planning Inc.
+                        5G Planning Tool
                     </Link>
                 </div>
                 <div>

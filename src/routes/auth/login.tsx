@@ -1,4 +1,5 @@
 import LoginForm from '@/components/login/login-form';
+import LoginImg from "@/assets/TWO.gif";
 
 export default function Login() {
     document.title = 'Login | 5G Planning Tool';
@@ -9,11 +10,11 @@ export default function Login() {
                     <LoginForm />
                 </div>
             </section>
-            <section className="bg-background relative z-0 hidden lg:block">
+            <section className="bg-black relative hidden lg:grid lg:place-items-center">
                 <img
-                    src="/src/assets/TWO.gif"
+                    src={LoginImg}
                     alt="Image"
-                    className="absolute z-50 inset-0 h-full w-full object-cover dark:brightness-[0.8] dark:grayscale"
+                    className="z-50  h-96 w-96 object-cover dark:brightness-[0.8] dark:grayscale"
                 />
             </section>
         </main>

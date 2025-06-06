@@ -10,14 +10,22 @@ export interface CoverageData {
     upload: number,
     download: number,
 
-    trPowerENB: number,
+    trPowergNB: number,
     trPowerUE: number,
 
     noiseFactorUE: number,
     noiseFactorENB: number,
 
     sinrUL: number,
-    sinrDL: number
+    sinrDL: number,
+
+    antennaGain: number,
+    buildingLoss: number,
+
+    shadowFaddingSelected: number,
+    shadowFaddingLoss: number
+
+    foliageLoss: number
 };
 
 export type CovreageResult = {

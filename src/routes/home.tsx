@@ -37,7 +37,7 @@ export default function Home() {
     };
 
     return (
-        <main className="grid place-items-center min-h-dvh">
+        <main className="grid place-items-center min-h-[85dvh] max-lg:px-4">
             <div>
                 <h1 className="text-5xl text-center w-full font-semibold">
                     5G Planning Tools

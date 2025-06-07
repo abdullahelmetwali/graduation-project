@@ -38,7 +38,7 @@ export default function SignUpForm() {
       toast({
         variant: "success",
         title: `🥳 Hello ${data.firstName}`,
-        description: "You have access now to do your calculations",
+        description: "Operational integrity confirmed, system under your control.",
       });
 
       localStorage.setItem('user', data.firstName + data.secName);

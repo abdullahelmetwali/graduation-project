@@ -35,7 +35,7 @@ export default function Navbar() {
             <nav className="flex justify-between items-center w-full">
                 <div>
                     <Link to="/" className="flex items-center gap-2 font-medium">
-                        <div className="bg-secondary-foreground text-primary-foreground flex size-7 items-center justify-center rounded-md">
+                        <div className="bg-white text-primary-foreground flex size-7 items-center justify-center rounded-md">
                             <img src={Logo} alt="logo" />
                         </div>
                         5G Planning Tool

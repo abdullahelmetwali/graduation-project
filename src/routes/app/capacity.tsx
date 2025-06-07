@@ -17,6 +17,7 @@ import { useHistory } from "@/store/calculations-history";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { useNavigate } from "react-router-dom";
+import CapacityCalculationSteps from "@/components/capacity/steps";
 
 export default function Capacity() {
     document.title = 'Capacity | 5G Planning Tool';
@@ -54,7 +55,8 @@ export default function Capacity() {
         mobilePenetration: null,
         marketShare: null,
         busyHourActiveUsers: null,
-        bler: 0.01,
+
+        bler: null,
 
         voiceCallRatio: null,
         voiceCallMin: null,
@@ -189,7 +191,7 @@ export default function Capacity() {
 
     if (!user) return null;
     return (
-        <main className="grid place-items-center min-h-dvh py-24 max-lg:py-20">
+        <main className="grid place-items-center min-h-[90dvh] py-24 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Capacity </CardTitle>
@@ -251,7 +253,7 @@ export default function Capacity() {
                             />
                         </div>
 
-                        <div className="w-full">
+                        <div className="flex gap-2 items-center max-lg:flex-col">
                             <InputBox
                                 type="number"
                                 value={data.siteCapacity}
@@ -260,7 +262,18 @@ export default function Capacity() {
                                 placeHolder="Enter the site capacity here..."
                                 content="Max data a site can support per busy hour"
                                 badge="in (Mbps)"
-                                className={"w-full"}
+                                className={""}
+                            />
+
+                            <InputBox
+                                type="number"
+                                value={data.bler}
+                                onChange={(value: number) => setData(prev => ({ ...prev, bler: Number(value) }))}
+                                label="block error rate"
+                                placeHolder="Enter the site bler here..."
+                                content="Ratio of data blocks received with errors"
+                                badge="in (Percentage (%))"
+                                className={""}
                             />
 
                         </div>
@@ -283,12 +296,12 @@ export default function Capacity() {
 
                                 <InputBox
                                     type="number"
-                                    value={data.voiceCallRate}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, voiceCallRate: Number(value) }))}
-                                    label="voice Call Rate"
-                                    placeHolder="Enter the voice call rate here..."
-                                    content="Amount of data consumed per voice call during a call session"
-                                    badge="in (Mbps)"
+                                    value={data.voiceCallMin}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, voiceCallMin: Number(value) }))}
+                                    label="voice call minutes"
+                                    placeHolder="Enter the voice call minutes here..."
+                                    content="Average duration of a single voice call made by a user "
+                                    badge=""
                                     className={""}
                                 />
                             </div>
@@ -296,12 +309,12 @@ export default function Capacity() {
                             <div className="flex gap-2 items-center max-lg:flex-col">
                                 <InputBox
                                     type="number"
-                                    value={data.voiceCallMin}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, voiceCallMin: Number(value) }))}
-                                    label="voice call minutes"
-                                    placeHolder="Enter the voice call minutes here..."
-                                    content="Average duration of a single voice call made by a user "
-                                    badge=""
+                                    value={data.voiceCallRate}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, voiceCallRate: Number(value) }))}
+                                    label="voice Call Rate"
+                                    placeHolder="Enter the voice call rate here..."
+                                    content="Amount of data consumed per voice call during a call session"
+                                    badge="in (Mbps)"
                                     className={""}
                                 />
 
@@ -337,12 +350,12 @@ export default function Capacity() {
 
                                 <InputBox
                                     type="number"
-                                    value={data.browsingRate}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, browsingRate: Number(value) }))}
-                                    label="browsing rate"
-                                    placeHolder="Enter the browsing rate here..."
-                                    content="Amount of data rate (speed) used during browsing"
-                                    badge="in (Mbps)"
+                                    value={data.browsingMin}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, browsingMin: Number(value) }))}
+                                    label="browsing minutes"
+                                    placeHolder="Enter the browsing minutes here..."
+                                    content="Average session duration for browsing"
+                                    badge=""
                                     className={""}
                                 />
                             </div>
@@ -350,12 +363,12 @@ export default function Capacity() {
                             <div className="flex gap-2 items-center max-lg:flex-col">
                                 <InputBox
                                     type="number"
-                                    value={data.browsingMin}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, browsingMin: Number(value) }))}
-                                    label="browsing minutes"
-                                    placeHolder="Enter the browsing minutes here..."
-                                    content="Average session duration for browsing"
-                                    badge=""
+                                    value={data.browsingRate}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, browsingRate: Number(value) }))}
+                                    label="browsing rate"
+                                    placeHolder="Enter the browsing rate here..."
+                                    content="Amount of data rate (speed) used during browsing"
+                                    badge="in (Mbps)"
                                     className={""}
                                 />
 
@@ -391,12 +404,12 @@ export default function Capacity() {
 
                                 <InputBox
                                     type="number"
-                                    value={data.gamingRate}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, gamingRate: Number(value) }))}
-                                    label="gaming rate"
-                                    placeHolder="Enter the gaming rate here..."
-                                    content="Amount of data rate (speed) used during gaming"
-                                    badge="in (Mbps)"
+                                    value={data.gamingMin}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, gamingMin: Number(value) }))}
+                                    label="gaming minutes"
+                                    placeHolder="Enter the gaming minutes here..."
+                                    content="Average session duration for gaming"
+                                    badge=""
                                     className={""}
                                 />
                             </div>
@@ -404,12 +417,12 @@ export default function Capacity() {
                             <div className="flex gap-2 items-center max-lg:flex-col">
                                 <InputBox
                                     type="number"
-                                    value={data.gamingMin}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, gamingMin: Number(value) }))}
-                                    label="gaming minutes"
-                                    placeHolder="Enter the gaming minutes here..."
-                                    content="Average session duration for gaming"
-                                    badge=""
+                                    value={data.gamingRate}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, gamingRate: Number(value) }))}
+                                    label="gaming rate"
+                                    placeHolder="Enter the gaming rate here..."
+                                    content="Amount of data rate (speed) used during gaming"
+                                    badge="in (Mbps)"
                                     className={""}
                                 />
 
@@ -445,12 +458,12 @@ export default function Capacity() {
 
                                 <InputBox
                                     type="number"
-                                    value={data.streamingRate}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, streamingRate: Number(value) }))}
-                                    label="streaming rate"
-                                    placeHolder="Enter the streaming rate here..."
-                                    content="Amount of data rate (speed) used during streaming"
-                                    badge="in (Mbps)"
+                                    value={data.streamingMin}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, streamingMin: Number(value) }))}
+                                    label="streaming minutes"
+                                    placeHolder="Enter the streaming minutes here..."
+                                    content="Average session duration for streaming"
+                                    badge=""
                                     className={""}
                                 />
                             </div>
@@ -458,12 +471,12 @@ export default function Capacity() {
                             <div className="flex gap-2 items-center max-lg:flex-col">
                                 <InputBox
                                     type="number"
-                                    value={data.streamingMin}
-                                    onChange={(value: number) => setData(prev => ({ ...prev, streamingMin: Number(value) }))}
-                                    label="streaming minutes"
-                                    placeHolder="Enter the streaming minutes here..."
-                                    content="Average session duration for streaming"
-                                    badge=""
+                                    value={data.streamingRate}
+                                    onChange={(value: number) => setData(prev => ({ ...prev, streamingRate: Number(value) }))}
+                                    label="streaming rate"
+                                    placeHolder="Enter the streaming rate here..."
+                                    content="Amount of data rate (speed) used during streaming"
+                                    badge="in (Mbps)"
                                     className={""}
                                 />
 
@@ -498,13 +511,18 @@ export default function Capacity() {
                     </form>
 
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="grid">
                     {
                         result &&
                         <div className="flex items-center gap-2 text-base">
-                            <p className="text-muted-foreground">Number of sites you</p>
-                            <Badge className="font-semibold text-base">{result} 🚧</Badge>
+                            <p className="text-muted-foreground">Number of sites you need</p>
+                            <Badge className="font-semibold text-base">{result}</Badge>
                         </div>
+                    }
+                    <br />
+                    {
+                        result &&
+                        <CapacityCalculationSteps data={data} />
                     }
                 </CardFooter>
             </Card>

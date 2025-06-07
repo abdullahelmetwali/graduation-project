@@ -8,6 +8,7 @@ import type { CapacityData, CoverageData } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Profile() {
+    document.title = 'Profile | 5G Planning Tool';
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -21,7 +22,6 @@ export default function Profile() {
         if (storedCapacity) setCapacityCalc(JSON.parse(storedCapacity));
         if (storedCoverage) setCoverageCalc(JSON.parse(storedCoverage));
     }, []);
-
 
     const navigate = useNavigate();
 
@@ -55,18 +55,19 @@ export default function Profile() {
 
     if (isLoading) {
         return (
-            <div className="grid place-items-center h-full px-8 pt-24 md:p-10 md:pt-36">
+            <div className="grid place-items-center gap-8 h-full px-8 pt-24 md:p-10 md:pt-36">
                 <div className="flex gap-2 items-center">
                     <Skeleton className="size-14 rounded-full" />
-                    <div>
-                        <Skeleton className="w-40 rounded-lg h-3 mb-2" />
-                        <Skeleton className="w-28 rounded-lg h-3" />
-                    </div>
+                    <Skeleton className="w-40 rounded-lg h-3" />
+                </div>
+                <div className="w-full lg:w-1/2 grid lg:grid-cols-2 gap-2">
+                    <Skeleton className="w-full h-[50dvh] rounded-md" />
+                    <Skeleton className="w-full h-[50dvh] rounded-md" />
                 </div>
             </div>
         );
     };
-    console.log(capacityCalc)
+
     return (
         <main className="grid place-items-center h-full px-8 pt-24 md:p-10 md:pt-36">
             <section className="flex gap-2 items-center pb-8">

@@ -1,4 +1,4 @@
-import type { CoverageData, CovreageResult } from "@/types";
+import type { CoverageData, CoverageResult } from "@/types";
 
 const NOISE_FLOOR = -174; // dBm/Hz
 const RESOURCE_BLOCKS = 12;
@@ -9,7 +9,7 @@ const UL_NF_UE = 5; // DB Noise factor user equimpent ( for upload )
 const TXPOWER_GNB = 49;
 const TXPOWER_UE = 23;
 
-export default function calculateCoverage(data: CoverageData): CovreageResult {
+export default function calculateCoverage(data: CoverageData): CoverageResult {
     const { area, frequency, bandwidth, subCarrier, sinrDL, sinrUL, antennaGain, buildingLoss, foliageLoss, shadowFaddingLoss } = data;
 
     const logBW = 10 * Math.log10(bandwidth); // in DL

@@ -28,7 +28,7 @@ export interface CoverageData {
     foliageLoss: number
 };
 
-export type CovreageResult = {
+export type CoverageResult = {
     dlRxSensitivity: number; // in dBm
     ulRxSensitivity: number; // in dBm
     DL_MAPL: number,

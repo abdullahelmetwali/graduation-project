@@ -1,15 +1,17 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
+import Navbar from '@/components/app/navbar';
+
 import Home from "@/routes/home";
-import Capacity from "@/routes/capacity";
-import Coverage from "@/routes/coverage";
+import Capacity from "@/routes/app/capacity";
+import Coverage from "@/routes/app/coverage";
 
 import Login from '@/routes/auth/login';
 import SignUp from '@/routes/auth/sign-up';
 import Profile from '@/routes/auth/profile';
-import Navbar from '@/components/app/navbar';
-import ForgetPassword from './routes/auth/forget-password';
+import ForgetPassword from '@/routes/auth/forget-password';
+import Footer from '@/components/app/footer';
 
 export default function App() {
   return (
@@ -28,6 +30,7 @@ export default function App() {
             <Route path="/capacity" element={<Capacity />} />
             <Route path="/coverage" element={<Coverage />} />
           </Routes>
+          <Footer />
         </TooltipProvider>
       </Router>
     </>

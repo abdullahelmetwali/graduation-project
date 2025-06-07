@@ -1,6 +1,15 @@
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, type FormEvent } from "react";
+import { AlertCircle } from "lucide-react";
+
 import type { CoverageData } from "@/types";
+import { useHistory } from "@/store/calculations-history";
+
 import calculateCoverage from "@/utils/calculate-coverage";
+import CoverageCalculationSteps from "@/components/coverage/steps";
+
 import {
     Select,
     SelectContent,
@@ -20,13 +29,9 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import InputBox from "@/components/mine-ui/input-box";
-import { useHistory } from "@/store/calculations-history";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertCircle } from "lucide-react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/config/firebase";
-import { useNavigate } from "react-router-dom";
+
 
 export default function Coverage() {
     document.title = 'Coverage | 5G Planning Tool';
@@ -156,7 +161,7 @@ export default function Coverage() {
 
     if (!user) return null;
     return (
-        <main className="grid place-items-center min-h-dvh py-24 max-lg:py-20">
+        <main className="grid place-items-center min-h-[90dvh] py-24 max-lg:py-20">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Coverage</CardTitle>
@@ -299,7 +304,7 @@ export default function Coverage() {
                                                     <SelectItem value="8.5">Dense Tree</SelectItem>
                                                     <SelectItem value="19.5">3 Tree</SelectItem>
                                                     <SelectItem value="11">2 Tree</SelectItem>
-                                                    {/* <SelectItem value="11">Typical</SelectItem> */}
+                                                    <SelectItem value="17">Typical</SelectItem>
                                                 </SelectGroup>
                                                 :
                                                 <SelectGroup>
@@ -307,7 +312,7 @@ export default function Coverage() {
                                                     <SelectItem value="15">Dense Tree</SelectItem>
                                                     <SelectItem value="24">3 Tree</SelectItem>
                                                     <SelectItem value="19">2 Tree</SelectItem>
-                                                    <SelectItem value="17">Typical</SelectItem>
+                                                    <SelectItem value="30">Typical</SelectItem>
                                                 </SelectGroup>
                                         }
                                     </SelectContent>
@@ -355,10 +360,10 @@ export default function Coverage() {
                             </div>
                         </div>
 
-                        {/* slow fading */}
+                        {/* shadow fading */}
                         <div className="flex gap-2 items-center max-lg:flex-col">
                             <div className="w-full space-y-1">
-                                <Label htmlFor="selected-sl">Slow fading Margin Type</Label>
+                                <Label htmlFor="selected-sl">Shadow Fading Scenario</Label>
                                 <Select
                                     value={data.shadowFaddingSelected?.toString()}
                                     onValueChange={(value) =>
@@ -367,7 +372,7 @@ export default function Coverage() {
                                     required
                                 >
                                     <SelectTrigger id="selected-sl">
-                                        <SelectValue placeholder="Choose slow fading margin loss type" />
+                                        <SelectValue placeholder="Choose shadow fading scenario type" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -379,8 +384,8 @@ export default function Coverage() {
                             </div>
 
                             <div className="w-full space-y-1">
-                                <Label htmlFor="loss-sl">Slow fading Margin
-                                    <strong className="text-muted-foreground mx-1">( LOS or NLOS )</strong>
+                                <Label htmlFor="loss-sl">
+                                    Fading Margin
                                 </Label>
                                 <Select
                                     value={data.shadowFaddingLoss?.toString()}
@@ -392,13 +397,13 @@ export default function Coverage() {
                                     {
                                         data.shadowFaddingSelected ?
                                             <SelectTrigger id="loss-sl">
-                                                <SelectValue placeholder="Choose shadow fading margin loss" />
+                                                <SelectValue placeholder="Choose fading margin loss" />
                                             </SelectTrigger>
                                             :
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <SelectTrigger id="loss-sl" disabled={!data.shadowFaddingSelected}>
-                                                        <SelectValue placeholder="Choose shadow fading margin loss" />
+                                                        <SelectValue placeholder="Choose fading margin loss" />
                                                     </SelectTrigger>
                                                 </TooltipTrigger>
                                                 <TooltipContent className="flex items-center !text-sm gap-2 text-destructive font-semibold">
@@ -428,7 +433,6 @@ export default function Coverage() {
                                     </SelectContent>
                                 </Select>
                             </div>
-
 
                         </div>
 
@@ -512,58 +516,68 @@ export default function Coverage() {
                             <Button type="submit" variant="secondary">
                                 Calculate
                             </Button>
-                            <Button variant="destructive" onClick={reset}>
+                            <Button type="button" variant="destructive" onClick={reset}>
                                 Reset
                             </Button>
                         </div>
                     </form>
                 </CardContent>
 
-                <CardFooter className="grid gap-2">
-                    {
-                        result.dlRxSensitivity &&
-                        <div className="flex items-center gap-2">
-                            <p>Download sensitivity (RX Sens. ( DL ))</p>
-                            <Badge>{result.dlRxSensitivity} dBM</Badge>
-                        </div>
-                    }
+                <CardFooter className="grid gap-4">
+                    <div className=" space-y-2">
+                        {
+                            result.dlRxSensitivity &&
+                            <div className="flex items-center gap-2">
+                                <p>Download sensitivity (RX Sens. ( DL ))</p>
+                                <Badge>{result.dlRxSensitivity} dBM</Badge>
+                            </div>
+                        }
 
-                    {
-                        result.ulRxSensitivity &&
-                        <div className="flex items-center gap-2">
-                            <p>Upload sensitivity (RX Sens. ( UL ))</p>
-                            <Badge>{result.ulRxSensitivity} dBM</Badge>
-                        </div>
-                    }
-                    {
-                        result.DL_MAPL &&
-                        <div className="flex items-center gap-2">
-                            <p>DL_MAPL</p>
-                            <Badge>{result.DL_MAPL} dB</Badge>
-                        </div>
-                    }
-                    {
-                        result.UL_MAPL &&
-                        <div className="flex items-center gap-2">
-                            <p>UL_MAPL</p>
-                            <Badge>{result.UL_MAPL} dB</Badge>
-                        </div>
-                    }
+                        {
+                            result.ulRxSensitivity &&
+                            <div className="flex items-center gap-2">
+                                <p>Upload sensitivity (RX Sens. ( UL ))</p>
+                                <Badge>{result.ulRxSensitivity} dBM</Badge>
+                            </div>
+                        }
 
-                    {
-                        result.NUMBER_OF_SITES_DL &&
-                        <div className="flex items-center gap-2">
-                            <p>NUMBER OF SITES DL ( DOWNLOAD )</p>
-                            <Badge>{result.NUMBER_OF_SITES_DL} 🚧</Badge>
-                        </div>
-                    }
+                        {
+                            result.DL_MAPL &&
+                            <div className="flex items-center gap-2">
+                                <p>DL_MAPL</p>
+                                <Badge>{result.DL_MAPL} dB</Badge>
+                            </div>
+                        }
+                        {
+                            result.UL_MAPL &&
+                            <div className="flex items-center gap-2">
+                                <p>UL_MAPL</p>
+                                <Badge>{result.UL_MAPL} dB</Badge>
+                            </div>
+                        }
 
+                        {
+                            result.NUMBER_OF_SITES_DL &&
+                            <div className="flex items-center gap-2">
+                                <p>NUMBER OF SITES DL ( DOWNLOAD )</p>
+                                <Badge>{result.NUMBER_OF_SITES_DL}</Badge>
+                            </div>
+                        }
+
+                        {
+                            result.NUMBER_OF_SITES_UL &&
+                            <div className="flex items-center gap-2">
+                                <p>NUMBER OF SITES UL ( UPLOAD )</p>
+                                <Badge>{result.NUMBER_OF_SITES_UL}</Badge>
+                            </div>
+                        }
+                    </div>
                     {
-                        result.NUMBER_OF_SITES_UL &&
-                        <div className="flex items-center gap-2">
-                            <p>NUMBER OF SITES UL ( UPLOAD )</p>
-                            <Badge>{result.NUMBER_OF_SITES_UL} 🚧</Badge>
-                        </div>
+                        (result.DL_MAPL && result.UL_MAPL &&
+                            result.dlRxSensitivity && result.ulRxSensitivity &&
+                            result.NUMBER_OF_SITES_DL && result.NUMBER_OF_SITES_UL)
+                        &&
+                        <CoverageCalculationSteps data={data} result={result} />
                     }
                 </CardFooter>
             </Card>

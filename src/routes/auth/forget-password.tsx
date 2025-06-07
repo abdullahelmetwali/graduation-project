@@ -4,7 +4,7 @@ import ForgetPasswordForm from "@/components/forget-password/forget-password-for
 export default function ForgetPassword() {
     document.title = "Forget Password | 5G Planning Tool";
     return (
-        <main className="grid min-h-svh lg:grid-cols-2">
+        <main className="grid min-h-dvh lg:grid-cols-2">
             <section className="grid place-items-center h-full p-6 md:p-10">
                 <div className="w-full max-w-sm">
                     <ForgetPasswordForm />

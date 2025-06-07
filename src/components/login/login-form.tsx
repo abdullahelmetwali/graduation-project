@@ -38,7 +38,7 @@ export default function LoginForm() {
       toast({
         variant: "success",
         title: "🥳 Welcome back!",
-        description: "You have access now to do your calculations",
+        description: "Operational integrity confirmed, system under your control.",
       });
 
       window.history.back();

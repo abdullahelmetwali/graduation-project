@@ -57,12 +57,15 @@ export default function calculateCapacity(data: CapacityData): number {
         gamingDutyRatio, gamingMin, gamingRate, gamingRatio,
         browsingDutyRatio, browsingMin, browsingRate, browsingRatio,
     } = data;
+
     const activeUsers = population * (mobilePenetration / 100) * (marketShare / 100) * (busyHourActiveUsers / 100);
 
-    const voiceTrafficPerUser = ((voiceCallRate) * (voiceCallMin) * (voiceCallDutyRatio / 100)) / (1 - bler);
-    const browsingTrafficPerUser = ((browsingRate) * (browsingMin) * (browsingDutyRatio / 100)) / (1 - bler);
-    const streamingTrafficPerUser = ((streamingRate) * (streamingMin) * (streamingDutyRatio / 100)) / (1 - bler);
-    const gamingTrafficPerUser = ((gamingRate) * (gamingMin) * (gamingDutyRatio / 100)) / (1 - bler);
+    const blerPercentage = (bler / 100);
+
+    const voiceTrafficPerUser = ((voiceCallRate) * (voiceCallMin) * (voiceCallDutyRatio / 100)) / (1 - blerPercentage);
+    const browsingTrafficPerUser = ((browsingRate) * (browsingMin) * (browsingDutyRatio / 100)) / (1 - blerPercentage);
+    const streamingTrafficPerUser = ((streamingRate) * (streamingMin) * (streamingDutyRatio / 100)) / (1 - blerPercentage);
+    const gamingTrafficPerUser = ((gamingRate) * (gamingMin) * (gamingDutyRatio / 100)) / (1 - blerPercentage);
 
     const totalVoiceTraffic = (voiceCallRatio / 100) * activeUsers * voiceTrafficPerUser;
     const totalBrowsingTraffic = (browsingRatio / 100) * activeUsers * browsingTrafficPerUser;

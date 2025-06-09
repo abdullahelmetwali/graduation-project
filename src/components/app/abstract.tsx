@@ -19,7 +19,7 @@ export default function Abstract() {
             </DialogTrigger>
             <DialogContent className="rounded-md">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl max-lg:text-start">Abstract</DialogTitle>
+                    <DialogTitle className="text-2xl max-lg:text-start">About</DialogTitle>
                     <DialogDescription>
                     </DialogDescription>
                 </DialogHeader>

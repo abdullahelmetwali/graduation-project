@@ -36,11 +36,11 @@ export default function InputBox<T extends string | number>
             />
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="outline" className="absolute right-0 top-7">
+                    <Button type="button" variant="outline" className="absolute right-0 top-7">
                         <AlertCircle />
                     </Button>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="text-wrap max-w-[22rem] text-center">
                     {content} {badge && <Badge variant="secondary" className="ml-1">{badge}</Badge>}
                 </TooltipContent>
             </Tooltip>

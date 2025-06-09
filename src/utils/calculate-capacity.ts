@@ -1,55 +1,6 @@
-import type { CapacityData } from "@/types";
+import type { CapacityData, CapacityResult } from "@/types";
 
-// export default function calculateCapacity(data: CapacityData): number {
-//     const activeUsers = population * (mobilePenetration / 100) * (marketShare / 100) * (busyHourActiveUsers / 100);
-
-//     const voiceTrafficPerUser = (voiceCallRate * 1000 * (voiceCallDutyRatio / 100)) / (1 - bler);
-//     const browsingTrafficPerUser = (browsingRate * 1000 * (browsingDutyRatio / 100)) / (1 - bler);
-//     const streamingTrafficPerUser = (streamingRate * 1000 * (streamingDutyRatio / 100)) / (1 - bler);
-//     const gamingTrafficPerUser = (gamingRate * 1000 * (gamingDutyRatio / 100)) / (1 - bler);
-
-//     const totalVoiceTraffic = (voiceCallRatio / 100) * activeUsers * (voiceTrafficPerUser / 1000000);
-//     const totalBrowsingTraffic = (browsingRatio / 100) * activeUsers * (browsingTrafficPerUser / 1000000);
-//     const totalStreamingTraffic = (streamingRatio / 100) * activeUsers * (streamingTrafficPerUser / 1000000);
-//     const totalGamingTraffic = (gamingRatio / 100) * activeUsers * (gamingTrafficPerUser / 1000000);
-
-//     const totalTrafficDemand = totalVoiceTraffic + totalBrowsingTraffic + totalStreamingTraffic + totalGamingTraffic;
-
-//     return Math.round(totalTrafficDemand / siteCapacity);
-// };
-
-// in mbps
-export default function calculateCapacity(data: CapacityData): number {
-    // const unitMeasurements = {
-    //     population: "person",
-    //     mobilePenetration: "%",
-    //     marketShare: "%",
-    //     busyHourActiveUsers: "users",
-    //     bler: 0.01,
-
-    //     voiceCallRatio: "%",
-    //     voiceCallMin: "minutes",
-    //     voiceCallRate: "Mbps",
-    //     voiceCallDutyRatio: "%",
-
-    //     browsingRatio: "%",
-    //     browsingMin: "minutes",
-    //     browsingRate: "Mbps",
-    //     browsingDutyRatio: "%",
-
-    //     gamingRatio: "%",
-    //     gamingMin: "minutes",
-    //     gamingRate: "Mbps",
-    //     gamingDutyRatio: "%",
-
-    //     streamingRatio: "%",
-    //     streamingMin: "minutes",
-    //     streamingRate: "Mbps",
-    //     streamingDutyRatio: "%",
-
-    //     siteCapacity: "Mbps"
-    // };
-
+export default function calculateCapacity(data: CapacityData): CapacityResult {
     const {
         population, mobilePenetration, marketShare, bler, busyHourActiveUsers, siteCapacity,
         voiceCallDutyRatio, voiceCallMin, voiceCallRate, voiceCallRatio,
@@ -74,7 +25,25 @@ export default function calculateCapacity(data: CapacityData): number {
 
     const totalTrafficDemand = (totalVoiceTraffic + totalBrowsingTraffic + totalStreamingTraffic + totalGamingTraffic) / 60;
 
-    return Math.ceil(totalTrafficDemand / siteCapacity);
+    const noOfSites = Math.ceil(totalTrafficDemand / siteCapacity);
+
+    return {
+        activeUsers: activeUsers,
+        blerPercentage: blerPercentage,
+        voiceTrafficPerUser: voiceTrafficPerUser,
+        browsingTrafficPerUser: browsingTrafficPerUser,
+        streamingTrafficPerUser: streamingTrafficPerUser,
+        gamingTrafficPerUser: gamingTrafficPerUser,
+
+        totalVoiceTraffic: totalVoiceTraffic,
+        totalBrowsingTraffic: totalBrowsingTraffic,
+        totalStreamingTraffic: totalStreamingTraffic,
+        totalGamingTraffic: totalGamingTraffic,
+
+        totalTrafficDemand: totalTrafficDemand,
+
+        noOfSites: noOfSites
+    }
 };
 
 // 60 دي يعني ساعه

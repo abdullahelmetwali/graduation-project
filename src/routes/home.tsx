@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { auth } from "@/config/firebase";
@@ -42,15 +41,18 @@ export default function Home() {
                 <h1 className="text-5xl text-center w-full font-semibold">
                     5G Planning Tools
                 </h1>
-                <div className="flex w-full justify-center gap-4 my-8 max-lg:flex-col">
-                    <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/capacity')}>
-                        5G Dimension Tool
-                        <Badge>Capacity</Badge>
+                <div className="my-10 space-y-4">
+                    <Button variant="default" className="text-base !py-5 w-full" onClick={() => seeIfUser('/statistics')}>
+                        Mobile Economy Statistics
                     </Button>
-                    <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/coverage')}>
-                        5G Network Planning Tool
-                        <Badge>Coverage</Badge>
-                    </Button>
+                    <div className="flex w-full justify-center gap-4  max-lg:flex-col">
+                        <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/capacity')}>
+                            Capacity Calculation
+                        </Button>
+                        <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/coverage')}>
+                            Coverage Calculation
+                        </Button>
+                    </div>
                 </div>
             </div>
         </main>

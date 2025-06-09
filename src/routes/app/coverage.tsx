@@ -138,6 +138,11 @@ export default function Coverage() {
             NUMBER_OF_SITES_DL: null,
             NUMBER_OF_SITES_UL: null,
         });
+
+        const form = document.querySelector('form');
+        if (form) {
+            form.reset();
+        }
     };
 
     const addCoverageToHistory = (e: FormEvent<HTMLFormElement>) => {
@@ -173,7 +178,7 @@ export default function Coverage() {
                 </CardHeader>
 
                 <CardContent>
-                    <form className="space-y-4" onSubmit={(e) => addCoverageToHistory(e)}>
+                    <form className="space-y-4" onSubmit={(e) => addCoverageToHistory(e)} autoComplete="off">
                         <div className="w-full">
                             <InputBox
                                 type="number"
@@ -416,18 +421,18 @@ export default function Coverage() {
                                             // 2 === nLos 
                                             data.shadowFaddingSelected === 2 ?
                                                 <SelectGroup>
-                                                    <SelectItem value="8">Rural Macro (RMa)</SelectItem>
-                                                    <SelectItem value="6">Urban Macro (UMa)</SelectItem>
-                                                    <SelectItem value="7.82">Urban Micro (UMi)</SelectItem>
-                                                    <SelectItem value="8.03">Indoor Hotspot (InH)</SelectItem>
+                                                    <SelectItem value="10">Rural Macro (RMa)</SelectItem>
+                                                    <SelectItem value="8">Urban Macro (UMa)</SelectItem>
+                                                    <SelectItem value="9.82">Urban Micro (UMi)</SelectItem>
+                                                    <SelectItem value="10.03">Indoor Hotspot (InH)</SelectItem>
                                                 </SelectGroup>
                                                 :
                                                 // los
                                                 <SelectGroup>
-                                                    {/* <SelectItem value="4">Rural Macro (RMa)</SelectItem> */}
-                                                    <SelectItem value="4">Urban Macro (UMa)</SelectItem>
-                                                    {/* <SelectItem value="4">Urban Micro (UMi)</SelectItem> */}
-                                                    <SelectItem value="3">Indoor Hotspot (InH)</SelectItem>
+                                                    <SelectItem value="6.00">Rural Macro (RMa)</SelectItem>
+                                                    <SelectItem value="6">Urban Macro (UMa)</SelectItem>
+                                                    <SelectItem value="6.0">Urban Micro (UMi)</SelectItem>
+                                                    <SelectItem value="5">Indoor Hotspot (InH)</SelectItem>
                                                 </SelectGroup>
                                         }
                                     </SelectContent>

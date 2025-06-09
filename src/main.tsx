@@ -5,7 +5,7 @@ import App from '@/App.tsx';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider, } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster.tsx';
-import { HistoryProvider } from './store/calculations-history';
+import { HistoryProvider } from '@/store/calculations-history';
 
 const queryClient = new QueryClient()
 

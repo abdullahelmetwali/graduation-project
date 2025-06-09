@@ -1,3 +1,5 @@
+import type { CapacityData, CapacityResult } from '@/types';
+
 import { Button } from '@/components/ui/button';
 import {
     Drawer,
@@ -9,66 +11,55 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from '@/components/ui/drawer';
-import type { CapacityData } from '@/types';
 import { Calculator, ChevronRight, Users, Signal, Activity } from 'lucide-react';
 
-export default function CapacityCalculationSteps({ data }: { data: CapacityData }) {
+export default function CapacityCalculationSteps({ data, result }: { data: CapacityData, result: CapacityResult }) {
     const {
-        population, mobilePenetration, marketShare, bler, busyHourActiveUsers, siteCapacity,
-        voiceCallDutyRatio, voiceCallMin, voiceCallRate, voiceCallRatio,
-        streamingDutyRatio, streamingMin, streamingRate, streamingRatio,
-        gamingDutyRatio, gamingMin, gamingRate, gamingRatio,
-        browsingDutyRatio, browsingMin, browsingRate, browsingRatio,
+        population, mobilePenetration, marketShare, busyHourActiveUsers, bler,
+        voiceCallRatio, streamingRatio, gamingRatio, browsingRatio,
     } = data;
 
-    const activeUsers = population * (mobilePenetration / 100) * (marketShare / 100) * (busyHourActiveUsers / 100);
-
-    const voiceTrafficPerUser = ((voiceCallRate) * (voiceCallMin) * (voiceCallDutyRatio / 100)) / (1 - bler);
-    const browsingTrafficPerUser = ((browsingRate) * (browsingMin) * (browsingDutyRatio / 100)) / (1 - bler);
-    const streamingTrafficPerUser = ((streamingRate) * (streamingMin) * (streamingDutyRatio / 100)) / (1 - bler);
-    const gamingTrafficPerUser = ((gamingRate) * (gamingMin) * (gamingDutyRatio / 100)) / (1 - bler);
-
-    const totalVoiceTraffic = (voiceCallRatio / 100) * activeUsers * voiceTrafficPerUser;
-    const totalBrowsingTraffic = (browsingRatio / 100) * activeUsers * browsingTrafficPerUser;
-    const totalStreamingTraffic = (streamingRatio / 100) * activeUsers * streamingTrafficPerUser;
-    const totalGamingTraffic = (gamingRatio / 100) * activeUsers * gamingTrafficPerUser;
-
-    const totalTrafficDemand = (totalVoiceTraffic + totalBrowsingTraffic + totalStreamingTraffic + totalGamingTraffic) / 60;
+    const { activeUsers, voiceTrafficPerUser, totalVoiceTraffic,
+        browsingTrafficPerUser, totalBrowsingTraffic,
+        streamingTrafficPerUser, totalStreamingTraffic,
+        gamingTrafficPerUser, totalGamingTraffic,
+        totalTrafficDemand, noOfSites
+    } = result;
 
     const steps = [
         {
             icon: <Users className="w-5 h-5 text-blue-500" />,
             title: "Calculate Active Users",
-            description: `We start by determining the number of active users during busy hours. From a total population of ${population.toLocaleString()} people, we apply the mobile penetration rate of ${mobilePenetration}%, then factor in our market share of ${marketShare}%, and finally consider that ${busyHourActiveUsers}% of users are active during busy hours.`,
-            formula: `${population.toLocaleString()} × ${mobilePenetration}% × ${marketShare}% × ${busyHourActiveUsers}%`,
-            result: `${Math.round(activeUsers).toLocaleString()} active users`
+            description: `We start by determining the number of active users during busy hours. From a total population of ${population?.toLocaleString()} people, we apply the mobile penetration rate of ${mobilePenetration}%, then factor in our market share of ${marketShare}%, and finally consider that ${busyHourActiveUsers}% of users are active during busy hours.`,
+            formula: `${population?.toLocaleString()} × ${mobilePenetration}% × ${marketShare}% × ${busyHourActiveUsers}%`,
+            result: `${Math.round(activeUsers)?.toLocaleString()} active users`
         },
         {
             icon: <Signal className="w-5 h-5 text-purple-500" />,
             title: "Calculate Traffic Per User by Service",
-            description: `Next, we calculate how much traffic each user generates for different services. For each service type, we multiply the call/session rate by duration and duty ratio, then adjust for Block Error Rate (BLER) of ${(bler * 100).toFixed(1)}% to account for retransmissions.`,
+            description: `Next, we calculate how much traffic each user generates for different services. For each service type, we multiply the call/session rate by duration and duty ratio, then adjust for Block Error Rate (BLER) of ${(bler)}% to account for retransmissions.`,
             formula: "For each service: (Rate × Duration × Duty Ratio) ÷ (1 - BLER)",
-            result: `Voice: ${voiceTrafficPerUser.toFixed(2)} mbps/user <br/> 
-            Browsing: ${browsingTrafficPerUser.toFixed(2)} mbps/user <br/> 
-            Streaming: ${streamingTrafficPerUser.toFixed(2)} mbps/user <br/> 
-            Gaming: ${gamingTrafficPerUser.toFixed(2)} mbps/user`
+            result: `Voice: ${voiceTrafficPerUser?.toFixed(2)} mbps/user <br/> 
+            Browsing: ${browsingTrafficPerUser?.toFixed(2)} mbps/user <br/> 
+            Streaming: ${streamingTrafficPerUser?.toFixed(2)} mbps/user <br/> 
+            Gaming: ${gamingTrafficPerUser?.toFixed(2)} mbps/user`
         },
         {
             icon: <Activity className="w-5 h-5 text-green-500" />,
             title: "Calculate Total Traffic by Service",
             description: `We then determine the total traffic demand for each service by multiplying the active users by the percentage using each service and their respective traffic per user. Voice calling represents ${voiceCallRatio}% of users, browsing ${browsingRatio}%, streaming ${streamingRatio}%, and gaming ${gamingRatio}%.`,
             formula: "For each service: (Service Ratio × Active Users × Traffic Per User)",
-            result: `Voice: ${Math.round(totalVoiceTraffic).toLocaleString()} mbps <br/> 
-            Browsing: ${Math.round(totalBrowsingTraffic).toLocaleString()} mbps <br/> 
-            Streaming: ${Math.round(totalStreamingTraffic).toLocaleString()} mbps <br/> 
-            Gaming: ${Math.round(totalGamingTraffic).toLocaleString()} mbps`
+            result: `Voice: ${Math.round(totalVoiceTraffic)?.toLocaleString()} mbps <br/> 
+            Browsing: ${Math.round(totalBrowsingTraffic)?.toLocaleString()} mbps <br/> 
+            Streaming: ${Math.round(totalStreamingTraffic)?.toLocaleString()} mbps <br/> 
+            Gaming: ${Math.round(totalGamingTraffic)?.toLocaleString()} mbps`
         },
         {
             icon: <Calculator className="w-5 h-5 text-orange-500" />,
             title: "Calculate Final Traffic Demand",
             description: `Finally, we sum all service traffic demands and convert from kilobits per second to megabits per second by dividing by 60. This gives us the total bandwidth requirement needed to serve all active users across all services during peak busy hours.`,
-            formula: `(${Math.round(totalVoiceTraffic).toLocaleString()} + ${Math.round(totalBrowsingTraffic).toLocaleString()} + ${Math.round(totalStreamingTraffic).toLocaleString()} + ${Math.round(totalGamingTraffic).toLocaleString()}) ÷ 60`,
-            result: `${totalTrafficDemand.toFixed(2)} Mbps total traffic demand`
+            formula: `(${Math.round(totalVoiceTraffic)?.toLocaleString()} + ${Math.round(totalBrowsingTraffic)?.toLocaleString()} + ${Math.round(totalStreamingTraffic)?.toLocaleString()} + ${Math.round(totalGamingTraffic)?.toLocaleString()}) ÷ 60`,
+            result: `${totalTrafficDemand?.toFixed(2)} Mbps total traffic demand`
         }
     ];
 
@@ -134,7 +125,7 @@ export default function CapacityCalculationSteps({ data }: { data: CapacityData 
                                 Based on all calculations above, the total traffic demand for your network during busy hours is:
                             </p>
                             <div className="text-3xl font-bold text-primary">
-                                {Math.ceil(totalTrafficDemand / siteCapacity)} Mbps
+                                {noOfSites} Sites
                             </div>
                             <p className="text-xs text-muted-foreground mt-2">
                                 This represents the bandwidth needed to serve {Math.round(activeUsers).toLocaleString()} active users across all services

@@ -42,20 +42,6 @@ export default function Navbar() {
                     </Link>
                 </div>
                 <div>
-                    {/* {isUserHere &&
-                        <>
-                            <Button asChild variant="outline" className="text-base mx-2">
-                                <Link to={'/capacity'}>
-                                    Capacity
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline" className="text-base">
-                                <Link to={'/coverage'}>
-                                    Coverage
-                                </Link>
-                            </Button>
-                        </>
-                    } */}
                 </div>
                 <div className="flex items-center gap-2">
                     <ThemeToggle />

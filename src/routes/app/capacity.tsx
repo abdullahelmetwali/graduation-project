@@ -81,7 +81,24 @@ export default function Capacity() {
         siteCapacity: null
     });
 
-    const [result, setResult] = useState(null);
+    const [result, setResult] = useState({
+        activeUsers: null,
+        blerPercentage: null,
+
+        voiceTrafficPerUser: null,
+        browsingTrafficPerUser: null,
+        streamingTrafficPerUser: null,
+        gamingTrafficPerUser: null,
+
+        totalVoiceTraffic: null,
+        totalBrowsingTraffic: null,
+        totalStreamingTraffic: null,
+        totalGamingTraffic: null,
+
+        totalTrafficDemand: null,
+
+        noOfSites: null
+    });
 
     const reset = () => {
         setData({
@@ -113,6 +130,30 @@ export default function Capacity() {
 
             siteCapacity: null
         });
+
+        setResult({
+            activeUsers: null,
+            blerPercentage: null,
+
+            voiceTrafficPerUser: null,
+            browsingTrafficPerUser: null,
+            streamingTrafficPerUser: null,
+            gamingTrafficPerUser: null,
+
+            totalVoiceTraffic: null,
+            totalBrowsingTraffic: null,
+            totalStreamingTraffic: null,
+            totalGamingTraffic: null,
+
+            totalTrafficDemand: null,
+
+            noOfSites: null
+        });
+
+        const form = document.querySelector('form');
+        if (form) {
+            form.reset();
+        }
     };
 
     const addCapacityToHistory = (e: FormEvent<HTMLFormElement>) => {
@@ -502,6 +543,7 @@ export default function Capacity() {
                                 Calculate
                             </Button>
                             <Button
+                                type="button"
                                 variant="destructive"
                                 onClick={reset}
                             >
@@ -513,16 +555,16 @@ export default function Capacity() {
                 </CardContent>
                 <CardFooter className="grid">
                     {
-                        result &&
+                        result.noOfSites &&
                         <div className="flex items-center gap-2 text-base">
-                            <p className="text-muted-foreground">Number of sites you need</p>
-                            <Badge className="font-semibold text-base">{result}</Badge>
+                            <p>Number of sites you need</p>
+                            <Badge className="font-semibold text-base">{result.noOfSites}</Badge>
                         </div>
                     }
                     <br />
                     {
-                        result &&
-                        <CapacityCalculationSteps data={data} />
+                        result.noOfSites &&
+                        <CapacityCalculationSteps data={data} result={result} />
                     }
                 </CardFooter>
             </Card>

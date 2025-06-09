@@ -42,14 +42,14 @@ export default function Home() {
                     5G Planning Tools
                 </h1>
                 <div className="my-10 space-y-4">
-                    <Button variant="default" className="text-base !py-5 w-full" onClick={() => seeIfUser('/statistics')}>
+                    <Button variant="outline" className="text-base !py-5 w-full" onClick={() => seeIfUser('/statistics')}>
                         Mobile Economy Statistics
                     </Button>
                     <div className="flex w-full justify-center gap-4  max-lg:flex-col">
-                        <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/capacity')}>
+                        <Button variant="default" className="!py-5 w-full" onClick={() => seeIfUser('/capacity')}>
                             Capacity Calculation
                         </Button>
-                        <Button variant="outline" className="text-base !py-5" onClick={() => seeIfUser('/coverage')}>
+                        <Button variant="default" className="!py-5 w-full" onClick={() => seeIfUser('/coverage')}>
                             Coverage Calculation
                         </Button>
                     </div>

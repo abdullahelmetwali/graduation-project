@@ -197,7 +197,7 @@ export default function Coverage() {
                             <div className="w-full space-y-1">
                                 <Label htmlFor="frequency">Frequency</Label>
                                 <Select
-                                    value={data.frequency?.toString()}
+                                    value={data.frequency ? data.frequency?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, frequency: Number(value) }))
                                     }
@@ -233,7 +233,7 @@ export default function Coverage() {
                             <div className="w-full space-y-1">
                                 <Label htmlFor="enviroment-type">Enviroment type</Label>
                                 <Select
-                                    value={data.buildingLoss?.toString()}
+                                    value={data.frequency ? data.buildingLoss?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, buildingLoss: Number(value) }))
                                     }
@@ -278,7 +278,7 @@ export default function Coverage() {
                             <div className="w-full space-y-1">
                                 <Label htmlFor="tree-type">Tree density</Label>
                                 <Select
-                                    value={data.foliageLoss?.toString()}
+                                    value={data.foliageLoss ? data.foliageLoss?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, foliageLoss: Number(value) }))
                                     }
@@ -330,7 +330,7 @@ export default function Coverage() {
                             <div className="w-full space-y-1">
                                 <Label htmlFor="config">Antenna Config</Label>
                                 <Select
-                                    value={data.antennaGain?.toString()}
+                                    value={data.antennaGain ? data.antennaGain?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, antennaGain: Number(value) }))
                                     }
@@ -370,7 +370,7 @@ export default function Coverage() {
                             <div className="w-full space-y-1">
                                 <Label htmlFor="selected-sl">Shadow Fading Scenario</Label>
                                 <Select
-                                    value={data.shadowFaddingSelected?.toString()}
+                                    value={data.shadowFaddingSelected ? data.shadowFaddingSelected?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, shadowFaddingSelected: Number(value) }))
                                     }
@@ -393,7 +393,7 @@ export default function Coverage() {
                                     Fading Margin
                                 </Label>
                                 <Select
-                                    value={data.shadowFaddingLoss?.toString()}
+                                    value={data.shadowFaddingLoss ? data.shadowFaddingLoss?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, shadowFaddingLoss: Number(value) }))
                                     }
@@ -447,7 +447,7 @@ export default function Coverage() {
                                     Code Rate <strong className="text-muted-foreground">( SINR )</strong> DL
                                 </Label>
                                 <Select
-                                    value={data.sinrDL?.toString()}
+                                    value={data.sinrDL ? data.sinrDL?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, sinrDL: Number(value) }))
                                     }
@@ -483,7 +483,7 @@ export default function Coverage() {
                                     Code Rate <strong className="text-muted-foreground">( SINR )</strong> UL
                                 </Label>
                                 <Select
-                                    value={data.sinrUL?.toString()}
+                                    value={data.sinrUL ? data.sinrUL?.toString() : ''}
                                     onValueChange={(value) =>
                                         setData((prev) => ({ ...prev, sinrUL: Number(value) }))
                                     }

@@ -106,7 +106,8 @@ export default function Capacity() {
             mobilePenetration: null,
             marketShare: null,
             busyHourActiveUsers: null,
-            bler: 0.01,
+
+            bler: null,
 
             voiceCallRatio: null,
             voiceCallMin: null,
@@ -174,61 +175,6 @@ export default function Capacity() {
         setCapacity(updatedCapacity);
         localStorage.setItem('capacity', JSON.stringify(updatedCapacity));
     };
-
-    // const exampleData = {
-    //     population: 180000,
-    //     mobilePenetration: 125,
-    //     marketShare: 35,
-    //     busyHourActiveUsers: 80,
-    //     bler: 0.01,
-
-    //     voiceCallRatio: 25,
-    //     voiceCallMin: 3.5,
-    //     voiceCallRate: 64, // kbps
-    //     voiceCallDutyRatio: 40,
-
-    //     browsingRatio: 45,
-    //     browsingMin: 60,
-    //     browsingRate: 1000, // kbps (1 Mbps)
-    //     browsingDutyRatio: 10,
-
-    //     streamingRatio: 20,
-    //     streamingMin: 30,
-    //     streamingRate: 4000, // kbps (4 Mbps)
-    //     streamingDutyRatio: 20,
-
-    //     siteCapacity: 1233.16 // Mbps
-    // };
-
-    // const unitMeasurements = {
-    //     population: "person",
-    //     mobilePenetration: "%",
-    //     marketShare: "%",
-    //     busyHourActiveUsers: "users",
-    //     bler: 0.01,
-
-    //     voiceCallRatio: "%",
-    //     voiceCallMin: "minutes",
-    //     voiceCallRate: "Mbps",
-    //     voiceCallDutyRatio: "%",
-
-    //     browsingRatio: "%",
-    //     browsingMin: "minutes",
-    //     browsingRate: "Mbps",
-    //     browsingDutyRatio: "%",
-
-    //     gamingRatio: "%",
-    //     gamingMin: "minutes",
-    //     gamingRate: "Mbps",
-    //     gamingDutyRatio: "%",
-
-    //     streamingRatio: "%",
-    //     streamingMin: "minutes",
-    //     streamingRate: "Mbps",
-    //     streamingDutyRatio: "%",
-
-    //     siteCapacity: "Mbps"
-    // }
 
     if (!user) return null;
     return (

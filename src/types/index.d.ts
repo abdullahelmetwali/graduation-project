@@ -36,24 +36,6 @@ export type CoverageResult = {
     NUMBER_OF_SITES_UL: number,
 };
 
-export type CapacityResult = {
-    activeUsers: number,
-    blerPercentage: number,
-    voiceTrafficPerUser: number,
-    browsingTrafficPerUser: number,
-    streamingTrafficPerUser: number,
-    gamingTrafficPerUser: number,
-
-    totalVoiceTraffic: number,
-    totalBrowsingTraffic: number,
-    totalStreamingTraffic: number,
-    totalGamingTraffic: number,
-
-    totalTrafficDemand: number,
-
-    noOfSites: number
-};
-
 export interface CapacityData {
     population: number,
     mobilePenetration: number,
@@ -82,6 +64,24 @@ export interface CapacityData {
     streamingDutyRatio: number,
 
     siteCapacity: number
+};
+
+export type CapacityResult = {
+    activeUsers: number,
+    blerPercentage: number,
+    voiceTrafficPerUser: number,
+    browsingTrafficPerUser: number,
+    streamingTrafficPerUser: number,
+    gamingTrafficPerUser: number,
+
+    totalVoiceTraffic: number,
+    totalBrowsingTraffic: number,
+    totalStreamingTraffic: number,
+    totalGamingTraffic: number,
+
+    totalTrafficDemand: number,
+
+    noOfSites: number
 };
 
 export interface InputBoxType<T extends string | number> {

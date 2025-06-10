@@ -18,7 +18,7 @@ export default function App() {
   return (
     <>
       <Router>
-        <TooltipProvider>
+        <TooltipProvider delayDuration={200}>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

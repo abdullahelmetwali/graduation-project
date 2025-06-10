@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Album } from "lucide-react";
 
-export default function Abstract() {
+export default function About() {
     return (
         <Dialog>
             <DialogTrigger asChild>

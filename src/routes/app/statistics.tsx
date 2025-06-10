@@ -10,34 +10,36 @@ import {
     ChartLine
 } from 'lucide-react';
 
-const DonutChart = ({ percentage, label, color = "text-secondary-foreground" }) => {
-    const strokeDasharray = `${percentage}, 100`;
+const DonutChart = ({ percentage, label }) => {
+    const percentageDegree = (percentage / 100) * 360;
 
     return (
-        <div className="relative w-28 h-28">
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <path
-                    className="text-gray-200"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3.8"
-                />
-                <path
-                    className={"text-gray-600"}
-                    strokeDasharray={strokeDasharray}
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3.8"
-                    strokeLinecap="round"
-                />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className={`text-2xl font-bold ${color}`}>{percentage}%</span>
-                <p className="text-xs text-gray-500">{label}</p>
+        <div className="flex items-center justify-center">
+            <div className="relative size-28">
+                <div className="absolute inset-0 size-28 rounded-full"></div>
+
+                <div
+                    className="absolute inset-0 size-28 rounded-full"
+                    style={{
+                        background: `conic-gradient(from 0deg at center, #6b7280 0deg ${percentageDegree}deg, white ${percentageDegree}deg 360deg)`
+                    }}
+                ></div>
+
+                <div className="absolute inset-2 size-24 rounded-full bg-background"></div>
+
+                <div className="grid place-items-center absolute inset-0">
+                    <div className="text-center">
+                        <div className="text-2xl font-bold text-primary grid place-items-center">
+                            {percentage}%
+                            <span className='text-xs text-muted-foreground'>
+                                {label}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
     );
 };
 
@@ -130,8 +132,8 @@ export default function MobileEconomy() {
                     <div className="flex flex-col md:flex-row justify-around items-center text-center space-y-4 md:space-y-0">
                         {/* 4G */}
                         <div className="flex items-center space-x-4">
-                            <DonutChart percentage={58} label="4G 2024" color="text-gray-600" />
-                            <DonutChart percentage={35} label="4G 2030" color="text-gray-600" />
+                            <DonutChart percentage={58} label="4G 2024" />
+                            <DonutChart percentage={35} label="4G 2030" />
                         </div>
                         {/* 5G */}
                         <div className="flex items-center space-x-4">

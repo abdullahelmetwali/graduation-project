@@ -37,9 +37,9 @@ export default function Coverage() {
     document.title = 'Coverage | 5G Planning Tool';
     const navigate = useNavigate();
 
-    const [user, setUser] = useState(null);
-
     const { coverage, setCoverage } = useHistory();
+
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const getName = localStorage.getItem('user');
@@ -429,9 +429,9 @@ export default function Coverage() {
                                                 :
                                                 // los
                                                 <SelectGroup>
-                                                    <SelectItem value="6.00">Rural Macro (RMa)</SelectItem>
+                                                    <SelectItem value="6.001">Rural Macro (RMa)</SelectItem>
                                                     <SelectItem value="6">Urban Macro (UMa)</SelectItem>
-                                                    <SelectItem value="6.0">Urban Micro (UMi)</SelectItem>
+                                                    <SelectItem value="6.01">Urban Micro (UMi)</SelectItem>
                                                     <SelectItem value="5">Indoor Hotspot (InH)</SelectItem>
                                                 </SelectGroup>
                                         }

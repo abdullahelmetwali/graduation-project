@@ -13,12 +13,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const ContactUs = () => {
+export default function ContactUs() {
     const [data, setData] = useState({
         email: '',
         name: '',
         msg: ''
-    })
+    });
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -76,4 +77,3 @@ const ContactUs = () => {
         </Dialog>
     );
 };
-export default ContactUs;
